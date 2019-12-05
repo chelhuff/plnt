@@ -62,10 +62,13 @@ function _update()
 end
 
 --draw function
+--camera will follow sprite
 function _draw()
-  camera(5,-35)
+  cls()
+  camera(-64 + player.x + 4, -64 + player.y + 4)
   map() 
   spr(player.sprite, player.x, player.y)
+  camera()
 end
 
 -->8
@@ -101,6 +104,8 @@ function draw_game()
     spr(0, 50, 50)
     cls()
 end
+
+
 __gfx__
 00044000000440000004400000000000000000000000044000000000d6222ddd6666666600000000ffffffffcccccccc88fff788066666600000000000000000
 00444400004444000044440000000000000000000004444440000000222222266777777600000000ffffffffccccccccf8f7ff8f600000060000000000000000
