@@ -1,17 +1,16 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
+
+game = {}
+
 --initialize
 function _init()
-    --variables
-    scene="menu"
-    x=63
-    y=63
+    show_menu()
 end
 
 -->8
 --canvas size
-x = 125  y = 125
 
 --player object
 player = {}
@@ -23,6 +22,67 @@ player.y = 37
 player.sprite = 0
 player.speed = 2
 player.moving = false
+
+--menu function
+function show_menu()
+    game.upd = menu_update
+    game.drw = menu_draw
+end
+
+function menu_update()
+    if btn(4) then
+        show_game()
+    end
+end
+
+function menu_draw()
+    cls()
+    
+    print("Press Z to Start", 10, 10, 7)
+end
+
+--menu function
+function show_game()
+    x = 125 
+    y = 125
+
+    game.upd = game_update
+    game.drw = game_draw
+end
+
+function game_update()
+    if btn(0) then
+                player.x -= player.speed
+                move()
+    end
+
+    if btn(1)  then
+                player.x += player.speed
+                move()
+    end
+
+    if btn(2) then
+                player.y -= player.speed
+                move()
+    end
+
+    if btn(3) then
+                player.y += player.speed
+                move()
+    end
+
+    if not player.moving then
+                player.sprite = 0
+    end
+end
+
+function game_draw()
+    cls()
+    camera(-64 + player.x + 4, -64 + player.y + 4)
+    map() 
+    spr(player.sprite, player.x, player.y)
+    camera()
+end
 
 --sprite animation
 function move()
@@ -36,74 +96,13 @@ end
 
 --movement
 function _update()
-  if btn(0) then
-  			player.x -= player.speed
-  			move()
-  end
-
-  if btn(1)  then
-  			player.x += player.speed
-  			move()
-  end
-
-  if btn(2) then
-  			player.y -= player.speed
-  			move()
-  end
-
-  if btn(3) then
-  			player.y += player.speed
-  			move()
-  end
-
-  if not player.moving then
-  			player.sprite = 0
-  end
-  
+  game.upd()
 end
 
 --draw function
 --camera will follow sprite
 function _draw()
-  cls()
-  camera(-64 + player.x + 4, -64 + player.y + 4)
-  map() 
-  spr(player.sprite, player.x, player.y)
-  camera()
-end
-
--->8
---updates
-
-function update_menu()
-    if btnp(❎) then
-        scene="game"
-    end
-end
-
-function update_game()
- if btn(⬅️) then x-=1 end
-    if btn(➡️) then x+=1 end
-    if btn(⬆️) then y-=1 end
-    if btn(⬇️) then y+=1 end
-
-    if btnp(❎) then
-        scene="menu"
-    end
-end
-
--->8
---draws
-
-function draw_menu()
-    cls()
-    print("press ❎ to start",30,63)
-end
-
-function draw_game()
-    cls()
-    spr(0, 50, 50)
-    cls()
+  game.drw()
 end
 
 
@@ -133,12 +132,12 @@ __gfx__
 00d0000000000000000000d000000000000000000000000000000000ddd3d222ddd3d22200000000f8f78888f333bff7000000000000000000000000dddddddd
 00d0000000000000000000d000000000000000000000000000000000622322dd622322dd00000000f8888ff77ff3f7ff000000000000000000000000fddddddf
 00d0000000000000000000d00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-00d0000000000000000000d00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-00d0000000000000000000d00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-00d0000000000000000000d00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-00d0000000000000000000d00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-00ddd0000000000000000dd00000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
-0000ddddddddddddddddd0000000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
+00d0000000000000000000d00000000003333300033000000333003003333330000000000000000000000000cccccccc00000000000000000000000000000000
+00d0000000000000000000d00000000003300330033000000333303003333330000000000000000000000000cccccccc00000000000000000000000000000000
+00d0000000000000000000d00000000003300030033000000330303000033000000000000000000000000000cccccccc00000000000000000000000000000000
+00d0000000000000000000d00000000003333330033000000330333000033000000000000000000000000000cccccccc00000000000000000000000000000000
+00ddd0000000000000000dd00000000003300000033000000330033000033000000000000000000000000000cccccccc00000000000000000000000000000000
+0000ddddddddddddddddd0000000000003300000033333000330033000033000000000000000000000000000cccccccc00000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000cccccccc00000000000000000000000000000000
 3333333333333b334dddddd444444444333333334444444444444444000000000000000000000000000000000000000000000000000000000000000000000000
 3bb33bb333b33333dddddddd4444444433333333444e444444433444000000000000000000000000000000000000000000000000000000000000000000000000
