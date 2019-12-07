@@ -1,7 +1,6 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
-
 game = {}
 
 --initialize
@@ -10,8 +9,6 @@ function _init()
 end
 
 -->8
---canvas size
-
 --player object
 player = {}
 
@@ -19,9 +16,12 @@ player = {}
 player.x = 5
 player.y = 37
 
+--used for character animation
 player.sprite = 0
 player.speed = 2
 player.moving = false
+
+t = 0
 
 --menu function
 function show_menu()
@@ -29,53 +29,72 @@ function show_menu()
     game.drw = menu_draw
 end
 
+--if z pressed, transition to game
 function menu_update()
+
+    --"time"
+    t += 1
+
     if btn(4) then
         show_game()
     end
 end
 
+--menu
 function menu_draw()
     cls()
     
-    print("Press Z to Start", 10, 10, 7)
+    spr(52, 55, 20)
+    spr(53, 65, 20)
+    spr(54, 75, 20)
+    spr(55, 85, 20)
+
+    print("Be weary traveler, ", 40, 50, 15)
+    print("for this tale may ", 40, 60, 15)
+    print("become a true one...", 40, 70, 15) --8+(t/4)%8)
+
+    print("Press Z to Start", 42, 100, 7)
 end
 
 --menu function
 function show_game()
-    x = 125 
-    y = 125
+    x = 63 
+    y = 63
 
     game.upd = game_update
     game.drw = game_draw
 end
 
+--player movement implemented here
 function game_update()
+
+
     if btn(0) then
-                player.x -= player.speed
-                move()
+        player.x -= player.speed
+        move()
     end
 
     if btn(1)  then
-                player.x += player.speed
-                move()
+        player.x += player.speed
+        move()
     end
 
     if btn(2) then
-                player.y -= player.speed
-                move()
+        player.y -= player.speed
+        move()
     end
 
     if btn(3) then
-                player.y += player.speed
-                move()
+        player.y += player.speed
+        move()
     end
 
     if not player.moving then
-                player.sprite = 0
+        player.sprite = 0
     end
 end
 
+--camera panning
 function game_draw()
     cls()
     camera(-64 + player.x + 4, -64 + player.y + 4)
@@ -86,21 +105,21 @@ end
 
 --sprite animation
 function move()
-		player.moving = true
-		player.sprite += 1
-		if player.sprite > 2 then
-					player.sprite = 0
-		end
-		cls()
+    player.moving = true
+    player.sprite += 1
+    if player.sprite > 2 then
+                player.sprite = 0
+    end
+    cls()
 end
 
---movement
+--update function
 function _update()
   game.upd()
+
 end
 
 --draw function
---camera will follow sprite
 function _draw()
   game.drw()
 end
