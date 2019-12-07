@@ -1,6 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
+
 game = {}
 
 --initialize
@@ -14,7 +15,7 @@ player = {}
 
 --starting position
 player.x = 5
-player.y = 37
+player.y = 54
 
 --used for character animation
 player.sprite = 0
@@ -31,10 +32,6 @@ end
 
 --if z pressed, transition to game
 function menu_update()
-
-    --"time"
-    t += 1
-
     if btn(4) then
         show_game()
     end
@@ -44,15 +41,18 @@ end
 function menu_draw()
     cls()
     
+    --draw PLNT
     spr(52, 55, 20)
     spr(53, 65, 20)
     spr(54, 75, 20)
     spr(55, 85, 20)
 
+    --draw plot text
     print("Be weary traveler, ", 40, 50, 15)
     print("for this tale may ", 40, 60, 15)
     print("become a true one...", 40, 70, 15) --8+(t/4)%8)
 
+    --user instructions
     print("Press Z to Start", 42, 100, 7)
 end
 
@@ -67,23 +67,25 @@ end
 
 --player movement implemented here
 function game_update()
-
-
+    --left arrow key
     if btn(0) then
         player.x -= player.speed
         move()
     end
-
+    
+    --right arrow key
     if btn(1)  then
         player.x += player.speed
         move()
     end
 
+    --up arrow key
     if btn(2) then
         player.y -= player.speed
         move()
     end
 
+    --down arrow key
     if btn(3) then
         player.y += player.speed
         move()
@@ -108,7 +110,7 @@ function move()
     player.moving = true
     player.sprite += 1
     if player.sprite > 2 then
-                player.sprite = 0
+        player.sprite = 0
     end
     cls()
 end
