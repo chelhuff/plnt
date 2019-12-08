@@ -28,6 +28,15 @@ spider = {}
 spider.x = 71
 spider.y = 129
 spider.direction = 1
+spider.sprite = 84
+
+--crab object
+crab = {}
+
+crab.x = 128
+crab.y = 170
+crab.direction = 1
+crab.sprite = 26
 
 --menu function
 function show_menu()
@@ -224,7 +233,8 @@ function game_draw()
     cls()
     camera(-64 + player.x + 4, -64 + player.y + 4)
     map()
-    spr(84, spider.x, spider.y)
+    spr(spider.sprite, spider.x, spider.y)
+    spr(crab.sprite, crab.x, crab.y)
     spr(player.sprite, player.x, player.y)
     camera()
 
@@ -249,6 +259,15 @@ function move_enemies()
         spider.direction = 1
     end
     spider.y += spider.direction
+
+    if crab.x == 200 then
+        crab.direction = -1
+
+    elseif crab.x == 128 then
+        crab.direction = 1
+    end
+    crab.x += crab.direction
+
     cls()
 end
 
