@@ -6,8 +6,7 @@ game = {}
 --initialize
 function _init()
     show_menu()
-
-     music(0, 0, 0)
+    music(0, 0, 0)
 end
 
 
@@ -74,7 +73,6 @@ function _dtb_nextline()
         dtb_dislines[i]=dtb_dislines[i+1]
     end
     dtb_dislines[#dtb_dislines]=""
-    sfx(2)
 end
 
  function _dtb_nexttext()
@@ -84,7 +82,6 @@ end
     del(dtb_queuf,dtb_queuf[1])
     del(dtb_queu,dtb_queu[1])
     _dtb_clean()
-    sfx(2)
  end
 
  -- make sure that this function is called each update.
@@ -110,7 +107,7 @@ function dtb_update()
                     local curchar=sub(curlines[dtb_curline],curchari,curchari)
                     dtb_ltime=1
                     if curchar~=" " then
-                        sfx(0)
+                
                     end
                     if curchar=="." then
                         dtb_ltime=6
@@ -384,6 +381,7 @@ function show_game()
     x = 63 
     y = 63
 
+
     game.upd = game_update
     game.drw = game_draw
 end
@@ -425,7 +423,6 @@ end
 --camera panning
 function game_draw()
     cls()
-    music(0, 0, 0)
     camera(-64 + player.x + 4, -64 + player.y + 4)
     map()
     spr(spider.sprite, spider.x, spider.y)
