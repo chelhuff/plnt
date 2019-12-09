@@ -8,7 +8,6 @@ function _init()
     show_menu()
 
      music(0, 0, 0)
-      music(0, 0, 0) music(0, 0, 0) music(0, 0, 0) music(0, 0, 0) music(0, 0, 0) music(0, 0, 0) music(0, 0, 0)
 end
 
 
