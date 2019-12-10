@@ -186,6 +186,26 @@ crab.direction = 1
 crab.sprite = 26
 
 -------------------------------------------
+--scorpion object
+-------------------------------------------
+scorpion = {}
+
+scorpion.x = 11
+scorpion.y = 39
+scorpion.direction = 1
+scorpion.sprite = 98
+
+-------------------------------------------
+--ghost object
+-------------------------------------------
+ghost = {}
+
+ghost.x = 128
+ghost.y = 170
+ghost.direction = 1
+ghost.sprite = 23
+
+-------------------------------------------
 --menu
 -------------------------------------------
 function show_menu()
@@ -470,21 +490,46 @@ end
 --enemy animation
 -------------------------------------------
 function move_enemies()
+
+    --spider
     if spider.y == 246 then
         spider.direction = -1
 
     elseif spider.y == 129 then
         spider.direction = 1
     end
+
     spider.y += spider.direction
 
+    --crab
     if crab.x == 200 then
         crab.direction = -1
 
     elseif crab.x == 128 then
         crab.direction = 1
     end
+
     crab.x += crab.direction
+
+    --ghost
+    if ghost.x == 200 then
+        ghost.direction = -1
+
+    elseif ghost.x == 128 then
+        ghost.direction = 1
+    end
+
+    ghost.x += ghost.direction
+
+    --scorpion
+    if scorpion.x == 200 then
+        scorpion.direction = -1
+
+    elseif scorpion.x == 128 then
+        scorpion.direction = 1
+    end
+
+    scorpion.x += scorpion.direction
 
     cls()
 end
