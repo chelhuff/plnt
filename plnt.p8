@@ -146,6 +146,7 @@ function inventory_draw()
     spr(17, 18, 20)
     spr(18, 24, 20)
     spr(32, 10, 27)
+    spr(cactus.inventory_sprite, 18, 27)
     spr(34, 26, 27)
     spr(48, 10, 34)
     spr(49, 18, 34)
@@ -234,36 +235,6 @@ function inventory_draw()
 end
 
 -------------------------------------------
---flower sprites
--------------------------------------------
-function draw_flowers()
-
-    -- sakura
-    spr(39, 26, 4)
-
-    --poison ivy
-    spr(40, 19, 8)
-
-    --coral
-    spr(42, 26, 24)
-
-    --seaweed
-    spr(43, 18, 17)
-
-    --daisy
-    spr(68, 4, 19)
-
-    --cactus
-    spr(70, 4, 19)
-
-    --pink
-    spr(69, 8, 24)
-
-    cls()
-end
-
-
--------------------------------------------
 --game functions
 -------------------------------------------
 function show_game()
@@ -305,7 +276,7 @@ function game_update()
     end
 
     move_enemies()
-    draw_flowers()
+    render_plants()
 end
 
 --camera panning
@@ -316,6 +287,7 @@ function game_draw()
     spr(spider.sprite, spider.x, spider.y)
     spr(crab.sprite, crab.x, crab.y)
     spr(player.sprite, player.x, player.y)
+    spr(cactus.sprite, cactus.x, cactus.y)
     camera() 
 end
 
