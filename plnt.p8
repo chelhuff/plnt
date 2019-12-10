@@ -172,6 +172,7 @@ book = {}
 book.x = 64
 book.y = 56
 book.sprite = 21
+book.collected = false
 book.inventory_sprite = 255
 book.width = 8
 book.height = 8
@@ -398,11 +399,6 @@ function dialogue_draw()
     dtb_disp("your mission is to collect one of each of the plants from each region to preserve, so that the plant population can be rejuvenated again and we can move one step closer to a livable earth again.")
 end
 
-function book_dialogue()
-    cls()
-    
-    dtb_disp("Press X to show inventory, and Z to return to your game.")
-end
 
 -------------------------------------------
 --inventory
@@ -603,6 +599,12 @@ function game_draw()
     spr(lily.sprite, lily.x, lily.y)
     spr(futureflower.sprite, futureflower.x, futureflower.y)
     spr(book.sprite, book.x, book.y)
+
+    if book.collected == true then
+        print("Press X: Open Inv" , 0, 0, 8)
+        print("Press Z: Close Inv", 0, 9, 8)
+    end
+
     camera() 
 end
 
@@ -653,8 +655,8 @@ function render_plants()
 
     --book
     if collide(player, book) then
-    book_dialogue()
         book.sprite = 255
+        book.collected = true
     end
 
     --cactus
@@ -790,6 +792,7 @@ end
 function _draw()
   game.drw()
   dtb_draw()
+
 end
 
 
