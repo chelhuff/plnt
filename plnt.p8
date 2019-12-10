@@ -361,9 +361,9 @@ function menu_draw()
     spr(55, 85, 20)
 
     --draw plot text
-    print("be weary traveler, ", 40, 50, 10)
-    print("for this tale may ", 40, 60, 10)
-    print("become a true one...", 40, 70, 10) --8+(t/4)%8)
+    print("be weary traveler, ", 40, 50, 15)
+    print("for this tale may ", 40, 60, 15)
+    print("become a true one...", 40, 70, 15) --8+(t/4)%8)
 
     --user instructions
     print("press z to start", 42, 100, 7)
