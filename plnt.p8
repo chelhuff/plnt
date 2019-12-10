@@ -24,45 +24,58 @@ player.sprite = 0
 player.speed = 2
 player.moving = false
 
+--stun status
+player.stun_counter = 100
+
 -------------------------------------------
 --spider object 
 -------------------------------------------
 spider = {}
 
-spider.x = 71
-spider.y = 129
+spider.x = 296
+spider.y = 128
 spider.direction = 1
 spider.sprite = 84
+spider.width = 6
+spider.height = 6
+spider.flipped = false
 
 -------------------------------------------
 --crab object
 -------------------------------------------
 crab = {}
 
-crab.x = 128
-crab.y = 170
+crab.x = 256
+crab.y = 88
 crab.direction = 1
 crab.sprite = 26
+crab.width = 6
+crab.height = 6
 
 -------------------------------------------
 --scorpion object
 -------------------------------------------
 scorpion = {}
 
-scorpion.x = 11
-scorpion.y = 39
-scorpion.direction = 1
+scorpion.x = 130
+scorpion.y = 150
+scorpion.direction = -1
 scorpion.sprite = 98
+scorpion.width = 6
+scorpion.height = 6
+scorpion.flipped = false
 
 -------------------------------------------
 --ghost object
 -------------------------------------------
 ghost = {}
 
-ghost.x = 128
-ghost.y = 170
+ghost.x = 140
+ghost.y = 88
 ghost.direction = 1
 ghost.sprite = 23
+ghost.width = 6
+ghost.height = 6
 
 -------------------------------------------
 --cactus object
@@ -247,27 +260,27 @@ end
 
 --player movement implemented here
 function game_update()
-    if btn(0) then
-        player.x -= player.speed
-        move()
-    end
 
-    if btn(1)  then
+    if player.stun_counter < 25 then 
+        player.stun_counter += 1
+
+    elseif btn(1)  then
         player.x += player.speed
         move()
-    end
 
-    if btn(2) then
+    elseif btn(2) then
         player.y -= player.speed
         move()
-    end
 
-    if btn(3) then
+    elseif btn(3) then
         player.y += player.speed
         move()
-    end
 
-    if not player.moving then
+    elseif btn(0) then
+        player.x -= player.speed
+        move()
+
+    else 
         player.sprite = 0
     end
 
@@ -277,6 +290,7 @@ function game_update()
 
     move_enemies()
     render_plants()
+    enemy_collide()
 end
 
 --camera panning
@@ -284,8 +298,10 @@ function game_draw()
     cls()
     camera(-64 + player.x + 4, -64 + player.y + 4)
     map()
-    spr(spider.sprite, spider.x, spider.y)
+    spr(spider.sprite, spider.x, spider.y, 1, 1, false, spider.flipped)
     spr(crab.sprite, crab.x, crab.y)
+    spr(ghost.sprite, ghost.x, ghost.y)
+    spr(scorpion.sprite, scorpion.x, scorpion.y, 1, 1, scorpion.flipped, false)
     spr(player.sprite, player.x, player.y)
     spr(cactus.sprite, cactus.x, cactus.y)
     camera() 
@@ -314,6 +330,17 @@ function render_plants()
 end
 
 -------------------------------------------
+--enemy collision
+-------------------------------------------
+function enemy_collide()
+    if collide(player, crab) or collide(player, ghost) or collide(player, spider) or collide(player, scorpion)then
+        player.stunned = true
+        player.stun_counter = 0
+        player.sprite = 0
+    end
+end
+
+-------------------------------------------
 --collision checking
 -------------------------------------------
 function collide(p, o)
@@ -330,34 +357,36 @@ end
 function move_enemies()
 
     --spider
-    if spider.y == 246 then
+    if spider.y == 248 then
         spider.direction = -1
+        spider.flipped = true
 
     elseif spider.y == 129 then
         spider.direction = 1
+        spider.flipped = false
     end
 
     spider.y += spider.direction
 
     --crab
-    if crab.x == 200 then
+    if crab.x == 344 then
         crab.direction = -1
 
-    elseif crab.x == 128 then
+    elseif crab.x == 256 then
         crab.direction = 1
     end
 
     crab.x += crab.direction
 
     --ghost
-    if ghost.x == 200 then
+    if ghost.y == 120 then
         ghost.direction = -1
 
-    elseif ghost.x == 128 then
+    elseif ghost.y == 0 then
         ghost.direction = 1
     end
 
-    ghost.x += ghost.direction
+    ghost.y += ghost.direction
 
     --scorpion
     if scorpion.x == 200 then
@@ -365,6 +394,7 @@ function move_enemies()
 
     elseif scorpion.x == 128 then
         scorpion.direction = 1
+        scorpion.flipped = true
     end
 
     scorpion.x += scorpion.direction
