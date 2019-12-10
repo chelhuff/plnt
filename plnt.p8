@@ -11,6 +11,11 @@ end
 
 
 -->8
+
+-----------------------------------------------------
+--dialogue library 
+-----------------------------------------------------
+
 --number of dialogue lines
  function dtb_init(numlines)
     dtb_queu={}
@@ -145,7 +150,10 @@ function dtb_draw()
 end
 
 -->8
+-------------------------------------------
 --player object
+-------------------------------------------
+
 player = {}
 
 --starting position
@@ -157,7 +165,9 @@ player.sprite = 0
 player.speed = 2
 player.moving = false
 
+-------------------------------------------
 --spider object 
+-------------------------------------------
 spider = {}
 
 spider.x = 71
@@ -165,7 +175,9 @@ spider.y = 129
 spider.direction = 1
 spider.sprite = 84
 
+-------------------------------------------
 --crab object
+-------------------------------------------
 crab = {}
 
 crab.x = 128
@@ -173,7 +185,9 @@ crab.y = 170
 crab.direction = 1
 crab.sprite = 26
 
---menu function
+-------------------------------------------
+--menu
+-------------------------------------------
 function show_menu()
     game.upd = menu_update
     game.drw = menu_draw
@@ -186,7 +200,7 @@ function menu_update()
     end
 end
 
---menu
+--menu UI design
 function menu_draw()
     cls()
     
@@ -197,46 +211,51 @@ function menu_draw()
     spr(55, 85, 20)
 
     --draw plot text
-    print("be weary traveler, ", 40, 50, 15)
-    print("for this tale may ", 40, 60, 15)
-    print("become a true one...", 40, 70, 15) --8+(t/4)%8)
+    print("be weary traveler, ", 40, 50, 10)
+    print("for this tale may ", 40, 60, 10)
+    print("become a true one...", 40, 70, 10) --8+(t/4)%8)
 
     --user instructions
     print("press z to start", 42, 100, 7)
 end
 
---menu function
+-------------------------------------------
+--dialogue 
+-------------------------------------------
+
 function show_dialogue()
     game.upd = dialogue_update
     game.drw = dialogue_draw
 end
 
---if z pressed, transition to dialogue
 function dialogue_update()
     if btn(4) then
         show_game()
     end
 end
 
-    dtb_init()
+--start use of library
+dtb_init()
     
---dialogue
 function dialogue_draw()
     cls()
 
+    --dialogue lines
     dtb_disp("the world is ending due to climate change.")
     dtb_disp("the population of plants is slowly depleting, putting the human race at risk of extinction.")
     dtb_disp("you've been hired by the last green Foundation left, to go out into the dangerous world, full of monsters and terror and collect these plants and bring them back to safety.")
     dtb_disp("your mission is to collect one of each of the plants from each region to preserve, so that the plant population can be rejuvenated again and we can move one step closer to a livable earth again.")
 end
 
---inventory function
+-------------------------------------------
+--inventory
+-------------------------------------------
 function show_inventory()
     game.upd = inventory_update
     game.drw = inventory_draw
 end
 
---if X is pressed, show the inventory
+--if X is pressed at any time, show the inventory
 function inventory_update()
     if btn(5) then
         show_inventory()
@@ -245,33 +264,6 @@ function inventory_update()
     if btn(4) then
         show_game()
     end
-end
-
---draw flower sprites
-function draw_flowers()
-
-    -- sakura
-    spr(39, 26, 4)
-
-    --poison ivy
-    spr(40, 19, 8)
-
-    --coral
-    spr(42, 26, 24)
-
-    --seaweed
-    spr(43, 18, 17)
-
-    --daisy
-    spr(68, 4, 19)
-
-    --cactus
-    spr(70, 4, 19)
-
-    --pink
-    spr(69, 8, 24)
-
-    cls()
 end
 
 --inventory
@@ -376,11 +368,42 @@ function inventory_draw()
     
 end
 
---game function
+-------------------------------------------
+--flower sprites
+-------------------------------------------
+function draw_flowers()
+
+    -- sakura
+    spr(39, 26, 4)
+
+    --poison ivy
+    spr(40, 19, 8)
+
+    --coral
+    spr(42, 26, 24)
+
+    --seaweed
+    spr(43, 18, 17)
+
+    --daisy
+    spr(68, 4, 19)
+
+    --cactus
+    spr(70, 4, 19)
+
+    --pink
+    spr(69, 8, 24)
+
+    cls()
+end
+
+
+-------------------------------------------
+--game functions
+-------------------------------------------
 function show_game()
     x = 63 
     y = 63
-
 
     game.upd = game_update
     game.drw = game_draw
@@ -431,7 +454,9 @@ function game_draw()
     camera() 
 end
 
+-------------------------------------------
 --sprite animation
+-------------------------------------------
 function move()
     player.moving = true
     player.sprite += 1
@@ -441,7 +466,9 @@ function move()
     cls()
 end
 
---nonplayer sprite animation
+-------------------------------------------
+--enemy animation
+-------------------------------------------
 function move_enemies()
     if spider.y == 246 then
         spider.direction = -1
@@ -461,6 +488,10 @@ function move_enemies()
 
     cls()
 end
+
+-------------------------------------------
+--main functions
+-------------------------------------------
 
 --update function
 function _update()
