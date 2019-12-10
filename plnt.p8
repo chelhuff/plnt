@@ -729,7 +729,7 @@ function move_enemies()
     crab.x += crab.direction
 
     --ghost
-    if ghost.x == 120 then
+    if ghost.y == 120 then
         ghost.direction = -1
 
     elseif ghost.y == 0 then
@@ -741,6 +741,7 @@ function move_enemies()
     --scorpion
     if scorpion.x == 200 then
         scorpion.direction = -1
+        scorpion.flipped = false
 
     elseif scorpion.x == 128 then
         scorpion.direction = 1
