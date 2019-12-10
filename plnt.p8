@@ -400,36 +400,6 @@ function inventory_draw()
 end
 
 -------------------------------------------
---flower sprites
--------------------------------------------
-function draw_flowers()
-
-    -- sakura
-    spr(39, 26, 4)
-
-    --poison ivy
-    spr(40, 19, 8)
-
-    --coral
-    spr(42, 26, 24)
-
-    --seaweed
-    spr(43, 18, 17)
-
-    --daisy
-    spr(68, 4, 19)
-
-    --cactus
-    spr(70, 4, 19)
-
-    --pink
-    spr(69, 8, 24)
-
-    cls()
-end
-
-
--------------------------------------------
 --game functions
 -------------------------------------------
 function show_game()
