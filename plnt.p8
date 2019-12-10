@@ -10,6 +10,143 @@ function _init()
 end
 
 -------------------------------------------
+--dialogue library
+-------------------------------------------
+
+--number of dialogue lines
+ function dtb_init(numlines)
+    dtb_queu={}
+    dtb_queuf={}
+    dtb_numlines=3
+    if numlines then
+        dtb_numlines=numlines
+    end
+    _dtb_clean()
+end
+
+--display text
+function dtb_disp(txt,callback)
+    local lines={}
+    local currline=""
+    local curword=""
+    local curchar=""
+    local upt=function()
+        if #curword+#currline>29 then
+            add(lines,currline)
+            currline=""
+        end
+        currline=currline..curword
+        curword=""
+     end
+     for i=1,#txt do
+        curchar=sub(txt,i,i)
+        curword=curword..curchar
+        if curchar==" " then
+            upt()
+        elseif #curword>28 then
+            curword=curword.."-"
+            upt()
+        end
+    end
+    upt()
+    if currline~="" then
+        add(lines,currline)
+    end
+    add(dtb_queu,lines)
+    if callback==nil then
+        callback=0
+    end
+    add(dtb_queuf,callback)
+end
+
+ -- functions with an underscore prefix are ment for internal use, don't worry about them.
+function _dtb_clean()
+    dtb_dislines={}
+    for i=1,dtb_numlines do
+        add(dtb_dislines,"")
+    end
+    dtb_curline=0
+    dtb_ltime=0
+end
+
+function _dtb_nextline()
+    dtb_curline+=1
+    for i=1,#dtb_dislines-1 do
+        dtb_dislines[i]=dtb_dislines[i+1]
+    end
+    dtb_dislines[#dtb_dislines]=""
+end
+
+ function _dtb_nexttext()
+    if dtb_queuf[1]~=0 then
+        dtb_queuf[1]()
+    end
+    del(dtb_queuf,dtb_queuf[1])
+    del(dtb_queu,dtb_queu[1])
+    _dtb_clean()
+ end
+
+ -- make sure that this function is called each update.
+function dtb_update()
+    if #dtb_queu>0 then
+        if dtb_curline==0 then
+            dtb_curline=1
+        end
+        local dislineslength=#dtb_dislines
+        local curlines=dtb_queu[1]
+        local curlinelength=#dtb_dislines[dislineslength]
+        local complete=curlinelength>=#curlines[dtb_curline]
+        if complete and dtb_curline>=#curlines then
+            if btnp(4) then
+                _dtb_nexttext()
+                return
+            end
+        elseif dtb_curline>0 then
+            dtb_ltime-=1
+            if not complete then
+                if dtb_ltime<=0 then
+                    local curchari=curlinelength+1
+                    local curchar=sub(curlines[dtb_curline],curchari,curchari)
+                    dtb_ltime=1
+                    if curchar~=" " then
+                    end
+                    if curchar=="." then
+                        dtb_ltime=6
+                    end
+                     dtb_dislines[dislineslength]=dtb_dislines[dislineslength]..curchar
+                end
+                if btnp(4) then
+                    dtb_dislines[dislineslength]=curlines[dtb_curline]
+                end
+            else
+                if btnp(4) then
+                    _dtb_nextline()
+                end
+            end
+        end
+    end
+end
+
+ -- make sure to call this function everytime you draw.
+function dtb_draw()
+    if #dtb_queu>0 then
+        local dislineslength=#dtb_dislines
+        local offset=0
+        if dtb_curline<dislineslength then
+            offset=dislineslength-dtb_curline
+        end
+        rectfill(2,125-dislineslength*8,125,125,0)
+        if dtb_curline>0 and #dtb_dislines[#dtb_dislines]==#dtb_queu[1][dtb_curline] then
+            print("\x8e",118,120,1)
+        end
+        for i=1,dislineslength do
+            print(dtb_dislines[i],4,i*8+119-(dislineslength+offset)*8,7)
+        end
+    end
+end
+
+
+-------------------------------------------
 --player object
 -------------------------------------------
 
@@ -26,6 +163,18 @@ player.moving = false
 
 --stun status
 player.stun_counter = 100
+
+-------------------------------------------
+--book object
+-------------------------------------------
+book = {}
+
+book.x = 64
+book.y = 56
+book.sprite = 21
+book.inventory_sprite = 255
+book.width = 8
+book.height = 8
 
 -------------------------------------------
 --spider object 
@@ -78,6 +227,78 @@ ghost.width = 6
 ghost.height = 6
 
 -------------------------------------------
+--sakura object
+-------------------------------------------
+sakura = {}
+
+sakura.x = 176
+sakura.y = 40
+sakura.sprite = 39
+sakura.inventory_sprite = 255
+sakura.width = 8
+sakura.height = 8
+
+-------------------------------------------
+--poisonivy object
+-------------------------------------------
+poisonivy = {}
+
+poisonivy.x = 216
+poisonivy.y = 62
+poisonivy.sprite = 40
+poisonivy.inventory_sprite = 255
+poisonivy.width = 8
+poisonivy.height = 8
+
+-------------------------------------------
+--coral object
+-------------------------------------------
+coral = {}
+
+coral.x = 304
+coral.y = 32
+coral.sprite = 42
+coral.inventory_sprite = 255
+coral.width = 8
+coral.height = 8
+
+-------------------------------------------
+--seaweed object
+-------------------------------------------
+seaweed = {}
+
+seaweed.x = 336
+seaweed.y = 88
+seaweed.sprite = 43
+seaweed.inventory_sprite = 255
+seaweed.width = 8
+seaweed.height = 8
+
+-------------------------------------------
+--whiteflower object
+-------------------------------------------
+whiteflower = {}
+
+whiteflower.x = 336
+whiteflower.y = 200
+whiteflower.sprite = 68
+whiteflower.inventory_sprite = 255
+whiteflower.width = 8
+whiteflower.height = 8
+
+-------------------------------------------
+--lily object
+-------------------------------------------
+lily = {}
+
+lily.x = 264
+lily.y = 216
+lily.sprite = 85
+lily.inventory_sprite = 255
+lily.width = 8
+lily.height = 8
+
+-------------------------------------------
 --cactus object
 -------------------------------------------
 cactus = {}
@@ -90,6 +311,18 @@ cactus.width = 8
 cactus.height = 8
 
 -------------------------------------------
+--pinkflower object
+-------------------------------------------
+pinkflower = {}
+
+pinkflower.x = 216
+pinkflower.y = 168
+pinkflower.sprite = 69
+pinkflower.inventory_sprite = 255
+pinkflower.width = 8
+pinkflower.height = 8
+
+-------------------------------------------
 --menu
 -------------------------------------------
 function show_menu()
@@ -100,7 +333,7 @@ end
 --if z pressed, transition to game
 function menu_update()
     if btn(4) then
-        show_game()
+        show_dialogue()
     end
 end
 
@@ -123,7 +356,34 @@ function menu_draw()
     print("press z to start", 42, 100, 7)
 end
 
+-------------------------------------------
+--dialogue
+-------------------------------------------
 
+--dialogue function
+function show_dialogue()
+    game.upd = dialogue_update
+    game.drw = dialogue_draw
+end
+
+--if z pressed, transition to dialogue
+function dialogue_update()
+    if btn(4) then
+        show_game()
+    end
+end
+
+    dtb_init()
+
+--dialogue
+function dialogue_draw()
+    cls()
+
+    dtb_disp("the world is ending due to climate change.")
+    dtb_disp("the population of plants is slowly depleting, putting the human race at risk of extinction.")
+    dtb_disp("you've been hired by the last Green Foundation left, to go out into the dangerous world, full of monsters and terror and collect these plants and bring them back to safety.")
+    dtb_disp("your mission is to collect one of each of the plants from each region to preserve, so that the plant population can be rejuvenated again and we can move one step closer to a livable earth again.")
+end
 
 -------------------------------------------
 --inventory
@@ -159,7 +419,7 @@ function inventory_draw()
     spr(17, 18, 20)
     spr(18, 24, 20)
     spr(32, 10, 27)
-    spr(cactus.inventory_sprite, 18, 27)
+    spr(sakura.inventory_sprite, 18, 27)
     spr(34, 26, 27)
     spr(48, 10, 34)
     spr(49, 18, 34)
@@ -170,6 +430,7 @@ function inventory_draw()
     spr(17, 58, 20)
     spr(18, 64, 20)
     spr(32, 50, 27)
+    spr(poisonivy.inventory_sprite, 58, 27)
     spr(34, 66, 27)
     spr(48, 50, 34)
     spr(49, 58, 34)
@@ -180,6 +441,7 @@ function inventory_draw()
     spr(17, 98, 20)
     spr(18, 104, 20)
     spr(32, 90, 27)
+    spr(coral.inventory_sprite, 98, 27)
     spr(34, 106, 27)
     spr(48, 90, 34)
     spr(49, 98, 34)
@@ -190,6 +452,7 @@ function inventory_draw()
     spr(17, 18, 50)
     spr(18, 24, 50)
     spr(32, 10, 57)
+    spr(seaweed.inventory_sprite, 18, 57)
     spr(34, 26, 57)
     spr(48, 10, 64)
     spr(49, 18, 64)
@@ -200,6 +463,7 @@ function inventory_draw()
     spr(17, 58, 50)
     spr(18, 64, 50)
     spr(32, 50, 57)
+    spr(whiteflower.inventory_sprite, 58, 57)
     spr(34, 66, 57)
     spr(48, 50, 64)
     spr(49, 58, 64)
@@ -210,6 +474,7 @@ function inventory_draw()
     spr(17, 98, 50)
     spr(18, 104, 50)
     spr(32, 90, 57)
+    spr(lily.inventory_sprite, 97, 58)
     spr(34, 106, 57)
     spr(48, 90, 64)
     spr(49, 98, 64)
@@ -220,6 +485,7 @@ function inventory_draw()
     spr(17, 18, 80)
     spr(18, 24, 80)
     spr(32, 10, 87)
+    spr(cactus.inventory_sprite, 18, 87)
     spr(34, 26, 87)
     spr(48, 10, 94)
     spr(49, 18, 94)
@@ -230,6 +496,7 @@ function inventory_draw()
     spr(17, 58, 80)
     spr(18, 64, 80)
     spr(32, 50, 87)
+    spr(pinkflower.inventory_sprite, 58, 87)
     spr(34, 66, 87)
     spr(48, 50, 94)
     spr(49, 58, 94)
@@ -304,6 +571,14 @@ function game_draw()
     spr(scorpion.sprite, scorpion.x, scorpion.y, 1, 1, scorpion.flipped, false)
     spr(player.sprite, player.x, player.y)
     spr(cactus.sprite, cactus.x, cactus.y)
+    spr(pinkflower.sprite, pinkflower.x, pinkflower.y)
+    spr(sakura.sprite, sakura.x, sakura.y)
+    spr(poisonivy.sprite, poisonivy.x, poisonivy.y)
+    spr(coral.sprite, coral.x, coral.y)
+    spr(seaweed.sprite, seaweed.x, seaweed.y)
+    spr(whiteflower.sprite, whiteflower.x, whiteflower.y)
+    spr(lily.sprite, lily.x, lily.y)
+    spr(book.sprite, book.x, book.y)
     camera() 
 end
 
@@ -323,10 +598,60 @@ end
 --plant rendering
 -------------------------------------------
 function render_plants()
+
+    --book
+    if collide(player, book) then
+        book.sprite = 255
+    end
+
+    --cactus
     if collide(player, cactus) then
         cactus.sprite = 255
         cactus.inventory_sprite = 70
     end
+
+    --pinkflower
+    if collide(player, pinkflower) then
+        pinkflower.sprite = 255
+        pinkflower.inventory_sprite = 69
+    end
+
+    --sakura
+    if collide(player, sakura) then
+        sakura.sprite = 255
+        sakura.inventory_sprite = 39
+    end
+
+    --poisonivy
+    if collide(player, poisonivy) then
+        poisonivy.sprite = 255
+        poisonivy.inventory_sprite = 40
+    end
+
+    --coral
+    if collide(player, coral) then
+        coral.sprite = 255
+        coral.inventory_sprite = 42
+    end
+
+    --seaweed
+    if collide(player, seaweed) then
+        seaweed.sprite = 255
+        seaweed.inventory_sprite = 43
+    end
+
+    --whiteflower
+    if collide(player, whiteflower) then
+        whiteflower.sprite = 255
+        whiteflower.inventory_sprite = 68
+    end
+
+    --lily
+    if collide(player, lily) then
+        lily.sprite = 255
+        lily.inventory_sprite = 85
+    end
+
 end
 
 -------------------------------------------
@@ -409,11 +734,13 @@ end
 --update function
 function _update()
   game.upd()
+  dtb_update()
 end
 
 --draw function
 function _draw()
   game.drw()
+  dtb_draw()
 end
 
 
@@ -434,14 +761,14 @@ __gfx__
 000dddddddddddddddddd0000000000066666666d122222f000000007dddddd7000000000000000000800800ffff7fff000000007766666655555555dddddddd
 000dd00000000000000dd0000000000066666666d122222f000000007d7dd7d7000000000000000000000000ffffffff000000006666666633333333dddddddd
 000d0000000000000000d0000000000066666666d122222f0000000007777770000000000000000000000000ffffffff0000000066766666555555552dddddd2
-000d00000000000000d00000000000000000000000000000000000002eee222203300000000000008000800000030030000000003333353555555555fddddddf
-000d00000000000000d0000000000000000000000000000000000000ee8ee222333000000000000088008088b303b030000000003333353533333333dddddddd
-000d00000000000000d0000000000000000000000000000000000000ee8ee2220033300000000000080080800303003b000000003333353555555555dddddddd
-000d00000000000000d00000000000000000000000000000000000002eee222200330000000000000888888003030330000000003333353533333333dddddddd
-000d00000000000000d00000000000000000000000000000000000002232222200300000000000000000880003033300000000003333353533333333dddddddd
-000d00000000000000d000000000000000000000000000000000000022332222003000000000000008008008b3030000000000003333353533333333dddddddd
-000d00000000000000d0000000000000000000000000000000000000222332220003000000000000080088880333b000000000003333353533333333dddddddd
-000d00000000000000d00000000000000000000000000000000000002223222200030000000000000888800000030000000000003333353533333333fddddddf
+000d00000000000000d00000000000000000000000000000000000000eee000003300000000000008000800000030030000000003333353555555555fddddddf
+000d00000000000000d0000000000000000000000000000000000000ee8ee000333000000000000088008088b303b030000000003333353533333333dddddddd
+000d00000000000000d0000000000000000000000000000000000000ee8ee0000033300000000000080080800303003b000000003333353555555555dddddddd
+000d00000000000000d00000000000000000000000000000000000000eee000000330000000000000888888003030330000000003333353533333333dddddddd
+000d00000000000000d00000000000000000000000000000000000000030000000300000000000000000880003033300000000003333353533333333dddddddd
+000d00000000000000d000000000000000000000000000000000000000330000003000000000000008008008b3030000000000003333353533333333dddddddd
+000d00000000000000d0000000000000000000000000000000000000000330000003000000000000080088880333b000000000003333353533333333dddddddd
+000d00000000000000d00000000000000000000000000000000000000003000000030000000000000888800000030000000000003333353533333333fddddddf
 000d0000000000000000d0000000000000000000000000000000000000000000000000000000000000000000cccccccc00000000333335356dddddd64dddddd4
 000d0000000000000000d0000000000003333300033000000333003003333330000000000000000000000000cccccccc0000000033333535dddddddddddddddd
 000d0000000000000000d0000000000003300330033000000333303003333330000000000000000000000000cccccccc0000000033333535dddddddddddddddd
@@ -458,14 +785,14 @@ __gfx__
 3333333333333bb3dddddddd44444444000770000333330000033000000000000000000033777733000000000000000000000000000000000000000000000000
 3333bb3333b33333dddddddd444444440000b0000033300000033000000000000000000033333333000000000000000000000000000000000000000000000000
 33333333333333334dddddd4444444440000bb000000000000033000000000000000000033333333000000000000000000000000000000000000000000000000
-33333333333333334444444444444444000000000000000000000000000000000000000033333333000000000000000000000000000000000000000000000000
-333333b3333373334454444445444444404004040000000000000000000000000000000033777733000000000000000000000000000000000000000000000000
-33b333333337a7334455445444444445044444400000000000000000000000000000000033733733000000000000000000000000000000000000000000000000
-33333333333373334444444444444444004444000000000000000000000000000000000033777733000000000000000000000000000000000000000000000000
-333333333b3333334444444444444444008448000000000000000000000000000000000033733733000000000000000000000000000000000000000000000000
-3333bb33333333334444444444444444044444400000000000000000000000000000000033733733000000000000000000000000000000000000000000000000
-3b333333333333b34454444444445444404004040000000000000000000000000000000033333333000000000000000000000000000000000000000000000000
-33333333333333334444444444444444000000000000000000000000000000000000000033333333000000000000000000000000000000000000000000000000
+33333333333333334444444444444444000000000077770000000000000000000000000033333333000000000000000000000000000000000000000000000000
+333333b333337333445444444544444440400404077aa77000000000000000000000000033777733000000000000000000000000000000000000000000000000
+33b333333337a7334455445444444445044444400077770000000000000000000000000033733733000000000000000000000000000000000000000000000000
+33333333333373334444444444444444004444000000b00000000000000000000000000033777733000000000000000000000000000000000000000000000000
+333333333b3333334444444444444444008448000000b00000000000000000000000000033733733000000000000000000000000000000000000000000000000
+3333bb33333333334444444444444444044444400000b00000000000000000000000000033733733000000000000000000000000000000000000000000000000
+3b333333333333b34454444444445444404004040000b00000000000000000000000000033333333000000000000000000000000000000000000000000000000
+33333333333333334444444444444444000000000000b00000000000000000000000000033333333000000000000000000000000000000000000000000000000
 3b333333333333330000555000000555000000000000000000000000404004040000000033333333000000000000000000000000000000000000000000000000
 33333b33333333330000805000000805000000000000000000000000044444400000000033777333000000000000000000000000000000000000000000000000
 3333333333333b330505005500505005000000000000000000000000004444000000000033733733000000000000000000000000000000000000000000000000
@@ -493,7 +820,7 @@ __map__
 0404040404040404040404040f040404080808081f08080807080707070808081b0a1b2f1b0a0a0a2f0a0a1b0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0404040404040404040404040f040404070808071f07080808070808080807071b1b0a2f1b0a1b0a2f1b1b1b0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0404040404040414141404040f040404080808081f0807080808081f1f1f1f1f2f2f2f2f1b0a0a1b2f0a0a0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-0f0f0f0f0f0f0f1415140f0f0f040404070708081f080708081f1f1f080707080a0a1b0a1b0a0a0a2f1b0a0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0f0f0f0f0f0f0f1414140f0f0f040404070708081f080708081f1f1f080707080a0a1b0a1b0a0a0a2f1b0a0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 04040404040404141414040404040404080807081f070808071f0807070807080a0a0a0a1b1b0a1b2f0a0a0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 04040404040404040404040404040404070808081f080707081f0808080808070a1b1b1b1b0a0a1b2f0a1b0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 04040404040404040404040404040404080808081f1f1f1f1f1f0708080707081b0a1b1b0a0a1b0a2f0a0a0a0b3b3b3b0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
