@@ -162,7 +162,7 @@ player.y = 54
 
 --used for character animation
 player.sprite = 0
-player.speed = 2
+player.speed = 1
 player.moving = false
 
 -------------------------------------------
@@ -204,6 +204,16 @@ ghost.x = 128
 ghost.y = 170
 ghost.direction = 1
 ghost.sprite = 23
+
+-------------------------------------------
+--cactus object
+-------------------------------------------
+cactus = {}
+
+cactus.x = 128
+cactus.y = 170
+cactus.sprite = 70
+cactus.inventory_sprite = 255
 
 -------------------------------------------
 --menu
@@ -301,6 +311,7 @@ function inventory_draw()
     spr(17, 18, 20)
     spr(18, 24, 20)
     spr(32, 10, 27)
+    spr(cactus.inventory_sprite, 18, 27)
     spr(34, 26, 27)
     spr(48, 10, 34)
     spr(49, 18, 34)
@@ -460,7 +471,8 @@ function game_update()
     end
 
     move_enemies()
-    draw_flowers()
+    --draw_flowers()
+    render_plants()
 end
 
 --camera panning
@@ -471,6 +483,7 @@ function game_draw()
     spr(spider.sprite, spider.x, spider.y)
     spr(crab.sprite, crab.x, crab.y)
     spr(player.sprite, player.x, player.y)
+    spr(cactus.sprite, cactus.x, cactus.y)
     camera() 
 end
 
@@ -484,6 +497,16 @@ function move()
         player.sprite = 0
     end
     cls()
+end
+
+-------------------------------------------
+--plant rendering
+-------------------------------------------
+function render_plants()
+    if (player.x == cactus.x) and (player.y == cactus.y) then
+        cactus.sprite = 255
+        cactus.inventory_sprite = 70
+    end
 end
 
 -------------------------------------------
