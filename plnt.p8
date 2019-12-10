@@ -548,6 +548,12 @@ end
 --player movement implemented here
 function game_update()
 
+    if (player.x < 48 ) and (player.x > 40)
+    and (player.y < 216) and (player.y > 200) 
+    and check_end() then
+        game_end()
+    end
+
     --if player stunned
     if player.stun_counter < 25 then 
         player.stun_counter += 1
@@ -621,6 +627,23 @@ function move()
         player.sprite = 0
     end
     cls()
+end
+
+-------------------------------------------
+--check if all flowers are collected
+-------------------------------------------
+function check_end()
+    if (sakura.sprite == 255) and (poisonivy.sprite == 255) and (sakura.sprite == 255)
+    and (coral.sprite == 255) and (seaweed.sprite == 255) and (whiteflower.sprite == 255)
+    and (lily.sprite == 255) and (cactus.sprite == 255) and (pinkflower.sprite == 255)
+    and (futureflower.sprite == 255) then
+        return true
+    end
+    return false
+end
+
+function game_end()
+    stop('you did it!', player.x, player.y, 15)
 end
 
 -------------------------------------------
